@@ -1,18 +1,38 @@
 
 
 
-<h1> This is game {{ game }} </h1>
+{% extends "core/_layout.twig" %}
+
+{% block title %} Main Page {% endblock %}
 
 
-<table>
-<tbody>
-{% for row in board %}
+{% block main_content_title %} This is game {{ game }}  {% endblock %}
 
-    <tr>
-        {% for key, cell in row %}
-            <td> {{ cell }} </td>
+{% block content %}
+
+
+    <table class="table">
+        <tbody>
+
+         <tr>
+             {% for key, row in board[0] %}
+                <th> <a class="btn btn-default" href="#" id="column-{{ key  }}">X</a></th>
+             {% endfor %}
+         </tr>
+
+
+        {% for row in board %}
+
+            <tr>
+                {% for key, cell in row %}
+                    <td> {{ cell }} </td>
+                {% endfor %}
+            </tr>
         {% endfor %}
-    </tr>
-{% endfor %}
-</tbody>
-</table>
+        </tbody>
+    </table>
+{% endblock %}
+
+
+
+

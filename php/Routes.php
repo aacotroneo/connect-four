@@ -2,7 +2,7 @@
 
 namespace Aac;
 
-use Board;
+use Aac\Model\Board;
 use Slim\Slim;
 
 class Routes

@@ -11,6 +11,8 @@ namespace Aac\Model;
  * Time: 07:02 PM
  */
 class BoardRepositorySession
+    //implements  BoardRepositoryIntefrace
+   ///GRR!! http://stackoverflow.com/questions/3704841/php-interface-problem-class-not-found    ??
 {
 
 

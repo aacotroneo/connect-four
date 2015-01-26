@@ -41,6 +41,11 @@ class Application
         $view = $app->view();
         $view->parserExtensions = array(new \Slim\Views\TwigExtension());
 
+        /** @var $twig \Twig_Environment */
+        $twig = $view->getEnvironment();
+        $twig->addGlobal('base_url', $_SERVER['CONTEXT_PREFIX']);
+
+
 
         $app->container->singleton('BoardRepository', function ($c) {
 

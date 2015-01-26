@@ -1,7 +1,24 @@
 
 
-<h1>Welcome, you may not be here! :D </h1>
+{% extends "core/_layout.twig" %}
 
-<a href="/games/1">Player one</a>
+{% block title %} Main Page {% endblock %}
 
-<a href="/games/2">Player two</a>
+
+{% block main_content_title %} Hello User {% endblock %}
+
+{% block content %}
+    <h1>Welcome, but you may not be here! :D </h1>
+
+    <p>
+        <a href="{{ base_url }}/games/1">Player one</a>
+    </p>
+
+    <p>
+        <a href="{{ base_url }}/games/2">Player two</a>
+    </p>
+
+{% endblock %}
+
+
+
