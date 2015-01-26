@@ -1,4 +1,18 @@
 
 
 
-<h1> This is game {{ game }}</h1>
+<h1> This is game {{ game }} </h1>
+
+
+<table>
+<tbody>
+{% for row in board %}
+
+    <tr>
+        {% for key, cell in row %}
+            <td> {{ cell }} </td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+</tbody>
+</table>

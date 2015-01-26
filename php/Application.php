@@ -1,6 +1,8 @@
 <?php
 namespace Aac;
 
+use Aac\Model\Board;
+use Aac\Model\BoardRepositorySession;
 use Slim\Slim;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
@@ -17,10 +19,11 @@ class Application
 
         $this->configureApp($app);
 
-        $app->get('/games/:id', function ($id) use ($app) {
 
-            $app->render('game.twig', array('game' => $id));
-        });
+        //I wont make a sophisticated bootstrap
+        //just move this code  where it's easy to find
+        Routes::load($app);
+
 
         $this->app = $app;
     }
@@ -37,6 +40,21 @@ class Application
         /** @var $view Twig */
         $view = $app->view();
         $view->parserExtensions = array(new \Slim\Views\TwigExtension());
+
+
+        $app->container->singleton('BoardRepository', function ($c) {
+
+            //lets just start with something! Players can play on the same computer at least!
+            return new BoardRepositorySession();
+        });
+
+        $app->container->singleton('Board', function ($c) {
+
+            $repository = $c['BoardRepository'];
+
+            $board = new Board($repository);
+            return $board;
+        });
 
     }
 
