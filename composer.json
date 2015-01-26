@@ -1,0 +1,21 @@
+{
+	"name": "Demo project",
+	"description": "Demo",
+	"autoload": {
+		"psr-4": {"Aac\\": "php/"}
+	},
+	"autoload-dev": {
+		"psr-4": { "Aac\\": "test/php" }
+	},
+	"require": {
+		"php": ">=5.3.9",
+		"slim/slim": "~2.0",
+		"slim/views": "*",
+		"twig/twig" :"~1.0",
+		"monolog/monolog" : "~1.0"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "4.4.*",
+		"heroku/heroku-buildpack-php": "*"
+	}
+}
