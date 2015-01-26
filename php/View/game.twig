@@ -21,11 +21,11 @@
          </tr>
 
 
-        {% for row in board %}
+        {% for key_row, row in board %}
 
             <tr>
-                {% for key, cell in row %}
-                    <td> {{ cell }} </td>
+                {% for key_cell, cell in row %}
+                    <td id="disc-hole-{{ key_row }}-{{ key_cell }}"> {{ cell }} </td>
                 {% endfor %}
             </tr>
         {% endfor %}

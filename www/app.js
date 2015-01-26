@@ -12,6 +12,9 @@ $(document).ready(function ()
 {
 	console.log("ready!");
 
+	//refresh board via ajax
+	refreshBoard();
+
 	$(".game-btn").click(function ()
 	{
 
@@ -28,18 +31,21 @@ $(document).ready(function ()
 				dataType: 'json',
 				success: function (result)
 				{
-					if( result['success'] == 'yes') {
+					if (result['success'] == 'yes') {
 						var player = result['player'];
 						var column = result['column'];
-						placeDisc(player, column)
-					}else {
+						var row = result['row'];
+						var newValue = getDiscForPlayer(player);
+
+						placeDisc(player, column, row, newValue);
+					} else {
 						alert("You cant make that move");
 					}
 
 				},
 				error: function (result)
 				{
-					alert("There was an error")
+					alert("There was an error: " + result.error);
 				}
 
 			}
@@ -47,10 +53,63 @@ $(document).ready(function ()
 
 	});
 
-	function placeDisc(player, column){
+	function refreshBoard()
+	{
+		var baseUrl = getBaseUrl();
 
-		alert('disc successfully added from ' + player + ' in column ' + column)
+		var serviceUrl = baseUrl + "/board";
 
+		$.ajax({
+				url: serviceUrl ,
+				type: 'POST',
+				dataType: 'json',
+				success: function (result)
+				{
+
+					if (result['success'] == 'yes') {
+						var board = result['board'];
+
+						$.each( board, function( row_ix, row_data ) {
+
+							$.each( row_data, function( col_ix, cell ) {
+
+								placeDisc(cell, col_ix, row_ix, getDiscForPlayer(cell));
+							});
+
+						});
+					} else {
+						alert("Unkown error");
+					}
+
+				},
+				error: function (result)
+				{
+					alert("There was an error" + result.error)
+				}
+
+			}
+		);
+	}
+
+
+
+
+	function placeDisc(player, column, row, value)
+	{
+
+		//disc-hole-{{ key_row }}-{{ key_cell }}
+		var hole_id = '#disc-hole-' + row + "-" + column;
+		$(hole_id).html(value);
+		console.log('disc successfully placed from ' + player + ' in column ' + column)
+
+	}
+
+	function getDiscForPlayer(player){
+		if(player == 1){
+			return "(1)"
+		} else if(player == 2){
+			return "(2)";
+		}else return "( )";
 	}
 
 	function getBaseUrl()
