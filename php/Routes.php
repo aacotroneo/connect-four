@@ -28,6 +28,22 @@ class Routes
             $app->render('game.twig', array('game' => $id, 'board' => $board->getData()));
         });
 
+        $app->any('/games/:id/put/:column', function ($id, $column) use ($app) { //any just for debugging - better to be a post
+
+            /** @var $board Board */
+            $board = $app->Board;
+
+            if($board->putDisc($id, $column)){
+                $result = array(
+                    'player' => $id,
+                    'column' => $column,
+                    'success' => 'yes'
+                );
+
+                header("Content-Type: application/json");
+                echo json_encode($result);
+            }
+        });
 
 
     }

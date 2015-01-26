@@ -35,6 +35,18 @@ class Board
         return $this->boardData;
     }
 
+    /**
+     * Puts a disc from player in specified column
+     * @param $playerId
+     * @param $column
+     * @return bool return true if successfull false otherwise
+     */
+    function putDisc($playerId, $column){
+
+        //do stuff
+        return true;
+    }
+
 
     protected function initialize()
     {

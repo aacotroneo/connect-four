@@ -16,7 +16,7 @@
 
          <tr>
              {% for key, row in board[0] %}
-                <th> <a class="btn btn-default" href="#" id="column-{{ key  }}">X</a></th>
+                <th> <a class="btn btn-default game-btn" href="#" data-column="{{ key  }}">X</a></th>
              {% endfor %}
          </tr>
 
