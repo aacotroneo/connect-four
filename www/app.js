@@ -57,6 +57,8 @@ $(document).ready(function ()
 	{
 		var baseUrl = getBaseUrl();
 
+		if(baseUrl.indexOf("/games") <= -1) return; //main page
+
 		var serviceUrl = baseUrl + "/board";
 
 		$.ajax({
