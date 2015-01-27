@@ -37,6 +37,8 @@ class Application
     protected function configureApp(Slim $app)
     {
 
+        session_start(); //this should not be here
+
         /** @var $view Twig */
         $view = $app->view();
         $view->parserExtensions = array(new \Slim\Views\TwigExtension());
@@ -44,6 +46,8 @@ class Application
         /** @var $twig \Twig_Environment */
         $twig = $view->getEnvironment();
         $twig->addGlobal('base_url', $_SERVER['CONTEXT_PREFIX']);
+
+
 
 
 
@@ -57,7 +61,19 @@ class Application
 
             $repository = $c['BoardRepository'];
 
-            $board = new Board($repository);
+            //this should be attached to the users somehow
+            $current_game = isset($_SESSION['current_game'])? $_SESSION['current_game'] : null;
+
+
+
+            $board = new Board($repository, $current_game);
+            if($current_game == null){
+                $_SESSION['current_game'] = $board->getGameId(); //save new game
+            }
+
+
+            $c['view']->getEnvironment()->addGlobal('current_game_id', $current_game);
+
             return $board;
         });
 

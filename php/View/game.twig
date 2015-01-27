@@ -22,9 +22,9 @@
 
 
         {% for key_row, row in board %}
-
+             {% set row_length = board.length %}
             <tr>
-                {% for key_cell, cell in row %}
+                {% for key_cell, cell in board[key_row] %}
                     <td id="disc-hole-{{ key_row }}-{{ key_cell }}"> {{ cell }} </td>
                 {% endfor %}
             </tr>

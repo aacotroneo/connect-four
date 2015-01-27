@@ -25,7 +25,7 @@ class Routes
             /** @var $board Board */
             $board = $app->Board;
 
-            $app->render('game.twig', array('game' => $id, 'board' => $board->getData()));
+            $app->render('game.twig', array('game' => $id, 'board' => $board->getBoardData()));
         });
 
         $app->any('/games/:id/put/:column', function ($id, $column) use ($app) { //any just for debugging - better to be a post
@@ -34,6 +34,7 @@ class Routes
             $board = $app->Board;
 
             $disc_added = $board->putDisc($id, $column);
+
             if(!isset($disc_added['error'])){
                 $result = array(
                     'player' => $disc_added['player'],
@@ -61,7 +62,7 @@ class Routes
             /** @var $board Board */
             $board = $app->Board;
 
-            $boardData = $board->getData();
+            $boardData = $board->getBoardData();
 
             $result = array(
                 'board' => $boardData,

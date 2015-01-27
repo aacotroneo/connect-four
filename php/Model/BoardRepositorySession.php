@@ -12,28 +12,36 @@ namespace Aac\Model;
  */
 class BoardRepositorySession
     //implements  BoardRepositoryIntefrace
-   ///GRR!! http://stackoverflow.com/questions/3704841/php-interface-problem-class-not-found    ??
+    ///GRR!! http://stackoverflow.com/questions/3704841/php-interface-problem-class-not-found    ??
 {
 
 
     function __construct()
     {
-        session_start();
+//        session_start();
     }
 
 
-    public function saveBoard($board)
+    public function saveBoard($id, $board)
     {
 
-        $_SESSION['current_board'] = $board;
+        $_SESSION['current_board'][$id] = $board;
 
     }
 
-    public function loadBoard($board)
+    public function createNewBoard($board)
     {
 
-        if (isset($_SESSION['current_board'])) {
-            return $_SESSION['current_board'];
+        $id = uniqid(); //db autoincrement
+        $this->saveBoard($id, $board);
+        return $id;
+    }
+
+    public function loadBoard($id)
+    {
+
+        if (isset($_SESSION['current_board']) && isset($_SESSION['current_board'][$id])) {
+            return $_SESSION['current_board'][$id];
         } else {
             return null;
         }
