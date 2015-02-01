@@ -2,7 +2,7 @@
 
 namespace Aac\Model;
 
-interface BoardRepositoryIntefrace {
+interface BoardRepositoryInterface {
 
 
     /**

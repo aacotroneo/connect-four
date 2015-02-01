@@ -12,9 +12,7 @@ namespace Aac\Model;
  *
  *
  */
-class BoardRepositoryDB
-//    implements  BoardRepositoryIntefrace
-//    /GRR!! http://stackoverflow.com/questions/3704841/php-interface-problem-class-not-found    ??
+class BoardRepositoryDB implements  BoardRepositoryInterface
 {
 
 

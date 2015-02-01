@@ -31,8 +31,6 @@ class Board
         } else {
             $this->load();
         }
-
-
     }
 
     /**

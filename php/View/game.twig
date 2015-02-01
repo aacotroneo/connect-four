@@ -6,7 +6,7 @@
 {% block title %} Main Page {% endblock %}
 
 
-{% block main_content_title %} This is game {{ game }}  {% endblock %}
+{% block main_content_title %} Welcome {% endblock %}
 
 {% block content %}
 
@@ -22,15 +22,17 @@
 
 
         {% for key_row, row in board %}
-             {% set row_length = board.length %}
             <tr>
+
                 {% for key_cell, cell in board[key_row] %}
-                    <td id="disc-hole-{{ key_row }}-{{ key_cell }}"> {{ cell }} </td>
+                    <td id="disc-hole-{{ 5 - key_row }}-{{ key_cell }}"> {{ cell }} </td>
                 {% endfor %}
             </tr>
         {% endfor %}
         </tbody>
     </table>
+    <a class="refresh btn btn-info" href="#">Refresh Game</a>
+
 {% endblock %}
 
 

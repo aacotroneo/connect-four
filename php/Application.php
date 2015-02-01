@@ -2,7 +2,9 @@
 namespace Aac;
 
 use Aac\Model\Board;
-use Aac\Model\BoardRepositorySession;
+use Aac\Model\BoardRepositoryMemory;
+
+
 use Slim\Slim;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
@@ -12,36 +14,11 @@ class Application
 
     protected $app;
 
+
     function __construct($config)
     {
 
         $app = new Slim($config);
-
-        $this->configureApp($app);
-
-
-        //I wont make a sophisticated bootstrap
-        //just move this code  where it's easy to find
-        Routes::load($app);
-
-
-        $this->app = $app;
-    }
-
-    public function run()
-    {
-        $this->app->run();
-    }
-
-    public function getApp()
-    {
-        return $this->app;
-    }
-
-
-    protected function configureApp(Slim $app)
-    {
-
 
         /** @var $view Twig */
         $view = $app->view();
@@ -52,32 +29,29 @@ class Application
         $twig->addGlobal('base_url', isset($_SERVER['CONTEXT_PREFIX']) ? $_SERVER['CONTEXT_PREFIX'] : '');
 
 
-        $app->container->singleton('BoardRepository', function ($c) {
+        $app->get('/', function () use ($app) {
 
-            session_start();
-            //lets just start with something! Players can play on the same computer at least!
-            return new BoardRepositorySession();
+            print_r($_SERVER);
+            $app->render('home.twig');
+
         });
 
-        $app->container->singleton('Board', function ($c) {
-
-            $repository = $c['BoardRepository'];
-
-            //this should be attached to the users somehow
-            $current_game = isset($_SESSION['current_game']) ? $_SESSION['current_game'] : null;
 
 
-            $board = new Board($repository, $current_game);
-            if ($current_game == null) {
-                $_SESSION['current_game'] = $board->getGameId(); //save new game
-            }
+        $app->get('/games/:id', function ($id) use ($app) {
 
+            $empty_board = new Board(new BoardRepositoryMemory());
 
-            $c['view']->getEnvironment()->addGlobal('current_game_id', $current_game);
-
-            return $board;
+            $app->render('game.twig', array('game' => $id, 'board' => $empty_board->getBoardData()));
         });
 
+
+        $this->app = $app;
+    }
+
+    public function  run()
+    {
+        $this->app->run();
     }
 
 

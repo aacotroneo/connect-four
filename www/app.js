@@ -1,126 +1,129 @@
-/**
- * Created by Alejandro on 26/01/2015.
- */
+var backend_server = "ws://localhost:9000";
+var conn;
 
-
-//disclaimer: I dont have anything handy to make this tidy.. I wish I could make some angular (know the basics), but I'm so late.
-//So here is just the code :(
-
+var player_id;
 
 // A $( document ).ready() block.
-$(document).ready(function ()
-{
-	console.log("ready!");
-
-	//refresh board via ajax
-	refreshBoard();
-
-	$(".game-btn").click(function ()
-	{
+$(document).ready(function () {
+    console.log("ready!");
 
 
-		var location = $(this).attr("data-column");
+    $(".game-btn").click(function () {
 
-		var baseUrl = getBaseUrl();
+            var location = $(this).attr("data-column");
 
-		var serviceUrl = baseUrl + "/put/" + location;
+            //we send our player id - we should send credentials and store this in the server
+            sendMessage({'action': 'move', 'column': location, 'player': player_id});
+        }
+    );
 
-		$.ajax({
-				url: serviceUrl,
-				type: 'POST',
-				dataType: 'json',
-				success: function (result)
-				{
-					if (result['success'] == 'yes') {
-						var player = result['player'];
-						var column = result['column'];
-						var row = result['row'];
-						var newValue = getDiscForPlayer(player);
+    $(".refresh").click(function () {
 
-						placeDisc(player, column, row, newValue);
-					} else {
-						alert("You cant make that move");
-					}
+            sendMessage({'action': 'get_board', 'player': player_id});
+        }
+    );
 
-				},
-				error: function (result)
-				{
-					alert("There was an error: " + result.error);
-				}
+    player_id = getPlayerId();
 
-			}
-		);
+    connect();
 
-	});
+    function connect() {
+        conn = new WebSocket(backend_server);
+        conn.onopen = function (e) {
+            console.log("Connection established!");
 
-	function refreshBoard()
-	{
-		var baseUrl = getBaseUrl();
+            sendMessage({'action': 'get_board', 'player': player_id});
 
-		if(baseUrl.indexOf("/games") <= -1) return; //main page
+        };
 
-		var serviceUrl = baseUrl + "/board";
+        conn.onmessage = function (e) {
+            console.log(e.data);
+            var msge = JSON.parse(e.data);
 
-		$.ajax({
-				url: serviceUrl ,
-				type: 'POST',
-				dataType: 'json',
-				success: function (result)
-				{
+            if (msge.error) {
+                alert(msge.error);
+                return;
+            }
 
-					if (result['success'] == 'yes') {
-						var board = result['board'];
-
-						$.each( board, function( row_ix, row_data ) {
-
-							$.each( row_data, function( col_ix, cell ) {
-
-								placeDisc(cell, col_ix, row_ix, getDiscForPlayer(cell));
-							});
-
-						});
-					} else {
-						alert("Unkown error");
-					}
-
-				},
-				error: function (result)
-				{
-					alert("There was an error" + result.error)
-				}
-
-			}
-		);
-	}
+            var action = msge.action;
 
 
+            switch (action) {
+                case 'init':
+                    receiveInit(msge.data);
+                    break;
+                case 'get_board':
+                    receiveBoard(msge.data);
+                    break;
+                case 'move':
+                    receiveMove(msge.data);
+                    break;
+            }
+
+        };
+
+    }
+
+    function receiveInit(data) {
+        console.log("connceted to server. Game on!");
+        console.log(data);
+    }
+
+    function receiveBoard(board) {
+
+        $.each(board, function (row_ix, row_data) {
+
+            $.each(row_data, function (col_ix, cell) {
+
+                placeDisc(cell, col_ix, row_ix, getDiscForPlayer(cell));
+            });
+
+        });
+
+    }
+
+    function receiveMove(data) {
+        var newValue = getDiscForPlayer(data.player);
+
+        placeDisc(data.player, data.column, data.row, newValue);
+
+    }
 
 
-	function placeDisc(player, column, row, value)
-	{
+    function placeDisc(player, column, row, value) {
 
-		//disc-hole-{{ key_row }}-{{ key_cell }}
-		var hole_id = '#disc-hole-' + row + "-" + column;
-		$(hole_id).html(value);
-		console.log('disc successfully placed from ' + player + ' in column ' + column)
+        //disc-hole-{{ key_row }}-{{ key_cell }}
+        var hole_id = '#disc-hole-' + row + "-" + column;
+        $(hole_id).html(value);
+        console.log('disc successfully placed from ' + player + ' in column ' + column)
 
-	}
+    }
 
-	function getDiscForPlayer(player){
-		if(player == 1){
-			return "(1)"
-		} else if(player == 2){
-			return "(2)";
-		}else return "( )";
-	}
+    function getDiscForPlayer(player) {
+        if (player == 1) {
+            return "(1)"
+        } else if (player == 2) {
+            return "(2)";
+        } else return "( )";
+    }
 
-	function getBaseUrl()
-	{
-		var getUrl = window.location;
-		var baseUrl = getUrl.protocol + "//" + getUrl.host + getUrl.pathname;
-		return baseUrl;
-	}
+    function sendMessage(message) {
+        conn.send(JSON.stringify(message));
+
+    }
+
+    function getPlayerId() {
+        //get this from server based on credentials - here is the url
+        var path = window.location.pathname.split('/');
+        return path[path.length - 1];
+    }
+
 
 });
+
+
+
+
+
 
 

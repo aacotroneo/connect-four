@@ -12,6 +12,7 @@
 		"slim/slim": "~2.0",
 		"slim/views": "*",
 		"twig/twig" :"~1.0",
+        "cboden/ratchet": "0.3.*",
 		"monolog/monolog" : "~1.0"
 	},
 	"require-dev": {
