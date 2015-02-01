@@ -12,6 +12,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 
 $conf = include_once(__DIR__ .'/../conf/config.php');
 
+$port =  getenv('PORT')? : 9000 ;
 $server = IoServer::factory(
     new HttpServer(
         new WsServer(
@@ -19,7 +20,7 @@ $server = IoServer::factory(
         )
     ),
 
-    9000
+    $port
 );
 
 $server->run();
